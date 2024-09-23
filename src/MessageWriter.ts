@@ -1,4 +1,4 @@
-import { CdrWriter } from "@foxglove/cdr";
+import { CdrWriter } from "@lichtblick/cdr";
 import {
   DefaultValue,
   MessageDefinition,

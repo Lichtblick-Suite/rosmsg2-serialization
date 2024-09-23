@@ -323,11 +323,6 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.35.0.tgz#b7569632b0b788a0ca0e438235154e45d42813a7"
   integrity sha512-JXdzbRiWclLVoD8sNUjR443VVlYqiYmDVT6rGUEIEHU5YJW0gaVZwV2xgM7D4arkvASqD0IlLUVjHiFuxaftRw==
 
-"@foxglove/cdr@^3.0.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@foxglove/cdr/-/cdr-3.3.0.tgz#8d273e1d6a11b8b3c508162c41073d4dad78cc5c"
-  integrity sha512-CjeA6ka/0cddVzQZY0qTEbExw849C7dD1aGpa+KeEzx0LZNxsQvvhsqWeGjszVM4BzwPcyWHwsiOZv27zbnnFA==
-
 "@foxglove/message-definition@^0.3.1":
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/@foxglove/message-definition/-/message-definition-0.3.1.tgz#63f48e8f3de47bba8943d8bfa8021af635254f1c"
@@ -614,6 +609,11 @@
   dependencies:
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
+
+"@lichtblick/cdr@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@lichtblick/cdr/-/cdr-1.0.0.tgz#09731bcdf23d1e6fbf3fced20c01a07321d906f0"
+  integrity sha512-1JaSNOC1pkfQRPyW5Y1g4SaUz+t+/FhF/GD+rxI1stfwPcBfx7qYkUHcAmDcct8Lf7DFJ3Qw0VEBWfMqrF91Og==
 
 "@lichtblick/eslint-plugin@^1.0.1":
   version "1.0.1"

@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "@foxglove/ros2idl-parser": "^0.3.4",
+    "@lichtblick/cdr": "^1.0.0",
     "@lichtblick/eslint-plugin": "^1.0.1",
     "@lichtblick/message-definition": "^1.0.0",
     "@lichtblick/rosmsg": "^1.0.0",
@@ -63,8 +64,5 @@
     "prettier": "2.8.4",
     "ts-jest": "29.0.5",
     "typescript": "4.9.5"
-  },
-  "dependencies": {
-    "@foxglove/cdr": "^3.0.0"
   }
 }
