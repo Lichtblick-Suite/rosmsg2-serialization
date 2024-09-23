@@ -1,6 +1,6 @@
 import { CdrReader } from "@foxglove/cdr";
-import { MessageDefinition, MessageDefinitionField } from "@foxglove/message-definition";
-import { Time } from "@foxglove/rostime";
+import { MessageDefinition, MessageDefinitionField } from "@lichtblick/message-definition";
+import { Time } from "@lichtblick/rostime";
 
 export type Deserializer = (reader: CdrReader) => boolean | number | bigint | string | Time;
 export type ArrayDeserializer = (
@@ -42,10 +42,10 @@ export class MessageReader<T = unknown> {
   // known or available
   readMessage<R = T>(buffer: ArrayBufferView): R {
     const reader = new CdrReader(buffer);
-    return this.readComplexType(this.rootDefinition, reader) as R;
+    return this.#readComplexType(this.rootDefinition, reader) as R;
   }
 
-  private readComplexType(
+  #readComplexType(
     definition: MessageDefinitionField[],
     reader: CdrReader,
   ): Record<string, unknown> {
@@ -77,11 +77,11 @@ export class MessageReader<T = unknown> {
           const arrayLength = field.arrayLength ?? reader.sequenceLength();
           const array = [];
           for (let i = 0; i < arrayLength; i++) {
-            array.push(this.readComplexType(nestedDefinition, reader));
+            array.push(this.#readComplexType(nestedDefinition, reader));
           }
           msg[field.name] = array;
         } else {
-          msg[field.name] = this.readComplexType(nestedDefinition, reader);
+          msg[field.name] = this.#readComplexType(nestedDefinition, reader);
         }
       } else {
         // Primitive type
