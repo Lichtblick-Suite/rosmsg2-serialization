@@ -323,27 +323,6 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.35.0.tgz#b7569632b0b788a0ca0e438235154e45d42813a7"
   integrity sha512-JXdzbRiWclLVoD8sNUjR443VVlYqiYmDVT6rGUEIEHU5YJW0gaVZwV2xgM7D4arkvASqD0IlLUVjHiFuxaftRw==
 
-"@foxglove/message-definition@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@foxglove/message-definition/-/message-definition-0.3.1.tgz#63f48e8f3de47bba8943d8bfa8021af635254f1c"
-  integrity sha512-nkPowiED67LjcKEC77CprkUG3XvSsFHHR9HEwWCuhnIC2wm0W57T1J+WWvteoArZ7SdGGlKzSYSRFyjQkgmITw==
-
-"@foxglove/omgidl-parser@1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@foxglove/omgidl-parser/-/omgidl-parser-1.0.5.tgz#52cbf3740ddad68b7fd4e21c46b964af7f9b20e3"
-  integrity sha512-Ae/QHNQ3fG0nyqIR/tQ2xD8U8pbEmlLapPb+NyEGKjPTnyMEjyI/F1uRgNVzQExrp5jm+ueEhEs0wV/INc5fiQ==
-  dependencies:
-    tslib "^2"
-
-"@foxglove/ros2idl-parser@^0.3.4":
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/@foxglove/ros2idl-parser/-/ros2idl-parser-0.3.4.tgz#a1fabcf3e715702d1efe6cda139a1be2fee017e7"
-  integrity sha512-XE8hrm69t7p2vtBvChdVGbehS1eJjmx/rC3Clu+LMIvKlPD849NN1GDUjr1efCbHHM12sJqoDXEVHKOxF2T0Hw==
-  dependencies:
-    "@foxglove/message-definition" "^0.3.1"
-    "@foxglove/omgidl-parser" "1.0.5"
-    md5-typescript "^1.0.5"
-
 "@humanwhocodes/config-array@^0.11.8":
   version "0.11.14"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.14.tgz#d78e481a039f7566ecc9660b4ea7fe6b1fec442b"
@@ -610,10 +589,10 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@lichtblick/cdr@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@lichtblick/cdr/-/cdr-1.0.0.tgz#09731bcdf23d1e6fbf3fced20c01a07321d906f0"
-  integrity sha512-1JaSNOC1pkfQRPyW5Y1g4SaUz+t+/FhF/GD+rxI1stfwPcBfx7qYkUHcAmDcct8Lf7DFJ3Qw0VEBWfMqrF91Og==
+"@lichtblick/cdr@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@lichtblick/cdr/-/cdr-1.0.1.tgz#3fabb30af50575a1760cc87a8841496996eafc05"
+  integrity sha512-KuhOo5KomWESy5xLXPdeiSHFc2XNsiVw1uGPW9CRle6n1xo80ttF6vmhr2lJAgQJQc/9MciEojiZv8j7gHeJeA==
 
 "@lichtblick/eslint-plugin@^1.0.1":
   version "1.0.1"
@@ -628,6 +607,22 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@lichtblick/message-definition/-/message-definition-1.0.0.tgz#57945e1b84dc00e11fff702236fdfe878848173f"
   integrity sha512-7/PLENDjYSmZuGp79Cis2tOCrqTGtUTrNtObycqEZKB87OBekSxTGdO5uA6KLNHxKcRftbtXAX+YF5xa/RaxLA==
+
+"@lichtblick/omgidl-parser@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@lichtblick/omgidl-parser/-/omgidl-parser-1.0.0.tgz#6e22503392c367f30177237453bbe858a7da6124"
+  integrity sha512-cmvKukXTqFFIr/mUxWf6zfDy257ZXdlkSpo1EHSt6yAZe9Uc3SlrrXqili456LHFnVoBmdNQeGuAQ+6x/LNNYg==
+  dependencies:
+    tslib "^2"
+
+"@lichtblick/ros2idl-parser@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@lichtblick/ros2idl-parser/-/ros2idl-parser-1.0.0.tgz#efbaded634693f63b4188a0b49973a38ab8070e4"
+  integrity sha512-sLjMFDWvIyk4JJXr8415Z/g8TAC/eK598jnfDcreQA4AIQOwEYSYlAJLappZO99mEBY3qMEY7taFZUTzNuZbLg==
+  dependencies:
+    "@lichtblick/message-definition" "^1.0.0"
+    "@lichtblick/omgidl-parser" "1.0.0"
+    md5-typescript "^1.0.5"
 
 "@lichtblick/rosmsg@^1.0.0":
   version "1.0.0"

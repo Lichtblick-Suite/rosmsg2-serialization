@@ -1,4 +1,4 @@
-import { parseRos2idl } from "@foxglove/ros2idl-parser";
+import { parseRos2idl } from "@lichtblick/ros2idl-parser";
 import { parse as parseMessageDefinition } from "@lichtblick/rosmsg";
 
 import { MessageReader } from "./MessageReader";
