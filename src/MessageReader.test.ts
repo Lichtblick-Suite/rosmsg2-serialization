@@ -1,4 +1,5 @@
-import { parse as parseMessageDefinition, parseRos2idl } from "@foxglove/rosmsg";
+import { parseRos2idl } from "@lichtblick/ros2idl-parser";
+import { parse as parseMessageDefinition } from "@lichtblick/rosmsg";
 
 import { MessageReader } from "./MessageReader";
 
@@ -324,7 +325,7 @@ describe("MessageReader", () => {
     geometry_msgs/msg/TransformStamped[] transforms
     ================================================================================
     MSG: geometry_msgs/msg/TransformStamped
-    Header header
+    std_msgs/msg/Header header
     string child_frame_id # the frame id of the child frame
     Transform transform
     ================================================================================

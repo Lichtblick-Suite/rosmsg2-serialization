@@ -1,9 +1,9 @@
-import { CdrWriter } from "@foxglove/cdr";
+import { CdrWriter } from "@lichtblick/cdr";
 import {
   DefaultValue,
   MessageDefinition,
   MessageDefinitionField,
-} from "@foxglove/message-definition";
+} from "@lichtblick/message-definition";
 
 type PrimitiveWriter = (
   value: unknown,
@@ -97,7 +97,7 @@ export class MessageWriter {
 
   /** Calculates the byte size needed to write this message in bytes. */
   calculateByteSize(message: unknown): number {
-    return this.byteSize(this.rootDefinition, message, 4);
+    return this.#byteSize(this.rootDefinition, message, 4);
   }
 
   /**
@@ -111,11 +111,11 @@ export class MessageWriter {
       buffer: output,
       size: output ? undefined : this.calculateByteSize(message),
     });
-    this.write(this.rootDefinition, message, writer);
+    this.#write(this.rootDefinition, message, writer);
     return writer.data;
   }
 
-  private byteSize(definition: MessageDefinitionField[], message: unknown, offset: number): number {
+  #byteSize(definition: MessageDefinitionField[], message: unknown, offset: number): number {
     const messageObj = message as Record<string, unknown> | undefined;
     let newOffset = offset;
 
@@ -124,7 +124,7 @@ export class MessageWriter {
       // `uint8 structure_needs_at_least_one_member` field when converting to IDL,
       // to satisfy the requirement from IDL of not being empty.
       // See also https://design.ros2.org/articles/legacy_interface_definition.html
-      return offset + this.getPrimitiveSize("uint8");
+      return offset + this.#getPrimitiveSize("uint8");
     }
 
     for (const field of definition) {
@@ -147,10 +147,10 @@ export class MessageWriter {
 
         if (field.isComplex === true) {
           // Complex type array
-          const nestedDefinition = this.getDefinition(field.type);
+          const nestedDefinition = this.#getDefinition(field.type);
           for (let i = 0; i < arrayLength; i++) {
             const entry = (dataArray[i] ?? {}) as Record<string, unknown>;
-            newOffset = this.byteSize(nestedDefinition, entry, newOffset);
+            newOffset = this.#byteSize(nestedDefinition, entry, newOffset);
           }
         } else if (field.type === "string") {
           // String array
@@ -161,7 +161,7 @@ export class MessageWriter {
           }
         } else {
           // Primitive array
-          const entrySize = this.getPrimitiveSize(field.type);
+          const entrySize = this.#getPrimitiveSize(field.type);
           const alignment = field.type === "time" || field.type === "duration" ? 4 : entrySize;
           newOffset += padding(newOffset, alignment);
           newOffset += entrySize * arrayLength;
@@ -169,9 +169,9 @@ export class MessageWriter {
       } else {
         if (field.isComplex === true) {
           // Complex type
-          const nestedDefinition = this.getDefinition(field.type);
+          const nestedDefinition = this.#getDefinition(field.type);
           const entry = (nestedMessage ?? {}) as Record<string, unknown>;
-          newOffset = this.byteSize(nestedDefinition, entry, newOffset);
+          newOffset = this.#byteSize(nestedDefinition, entry, newOffset);
         } else if (field.type === "string") {
           // String
           const entry = typeof nestedMessage === "string" ? nestedMessage : "";
@@ -179,7 +179,7 @@ export class MessageWriter {
           newOffset += 4 + entry.length + 1; // uint32 length prefix, string, null terminator
         } else {
           // Primitive
-          const entrySize = this.getPrimitiveSize(field.type);
+          const entrySize = this.#getPrimitiveSize(field.type);
           const alignment = field.type === "time" || field.type === "duration" ? 4 : entrySize;
           newOffset += padding(newOffset, alignment);
           newOffset += entrySize;
@@ -190,7 +190,7 @@ export class MessageWriter {
     return newOffset;
   }
 
-  private write(definition: MessageDefinitionField[], message: unknown, writer: CdrWriter): void {
+  #write(definition: MessageDefinitionField[], message: unknown, writer: CdrWriter): void {
     const messageObj = message as Record<string, unknown> | undefined;
 
     if (definition.length === 0) {
@@ -230,32 +230,32 @@ export class MessageWriter {
 
         if (field.isComplex === true) {
           // Complex type array
-          const nestedDefinition = this.getDefinition(field.type);
+          const nestedDefinition = this.#getDefinition(field.type);
           for (let i = 0; i < arrayLength; i++) {
             const entry = dataArray[i] ?? {};
-            this.write(nestedDefinition, entry, writer);
+            this.#write(nestedDefinition, entry, writer);
           }
         } else {
           // Primitive array
-          const arrayWriter = this.getPrimitiveArrayWriter(field.type);
+          const arrayWriter = this.#getPrimitiveArrayWriter(field.type);
           arrayWriter(nestedMessage, field.defaultValue, writer, field.arrayLength);
         }
       } else {
         if (field.isComplex === true) {
           // Complex type
-          const nestedDefinition = this.getDefinition(field.type);
+          const nestedDefinition = this.#getDefinition(field.type);
           const entry = nestedMessage ?? {};
-          this.write(nestedDefinition, entry, writer);
+          this.#write(nestedDefinition, entry, writer);
         } else {
           // Primitive
-          const primitiveWriter = this.getPrimitiveWriter(field.type);
+          const primitiveWriter = this.#getPrimitiveWriter(field.type);
           primitiveWriter(nestedMessage, field.defaultValue, writer);
         }
       }
     }
   }
 
-  private getDefinition(datatype: string) {
+  #getDefinition(datatype: string) {
     const nestedDefinition = this.definitions.get(datatype);
     if (nestedDefinition == undefined) {
       throw new Error(`Unrecognized complex type ${datatype}`);
@@ -263,7 +263,7 @@ export class MessageWriter {
     return nestedDefinition;
   }
 
-  private getPrimitiveSize(primitiveType: string) {
+  #getPrimitiveSize(primitiveType: string) {
     const size = PRIMITIVE_SIZES.get(primitiveType);
     if (size == undefined) {
       if (primitiveType === "wstring") {
@@ -274,7 +274,7 @@ export class MessageWriter {
     return size;
   }
 
-  private getPrimitiveWriter(primitiveType: string) {
+  #getPrimitiveWriter(primitiveType: string) {
     const writer = PRIMITIVE_WRITERS.get(primitiveType);
     if (writer == undefined) {
       throw new Error(`Unrecognized primitive type ${primitiveType}`);
@@ -282,7 +282,7 @@ export class MessageWriter {
     return writer;
   }
 
-  private getPrimitiveArrayWriter(primitiveType: string) {
+  #getPrimitiveArrayWriter(primitiveType: string) {
     const writer = PRIMITIVE_ARRAY_WRITERS.get(primitiveType);
     if (writer == undefined) {
       throw new Error(`Unrecognized primitive type ${primitiveType}[]`);
