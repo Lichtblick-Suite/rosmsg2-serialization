@@ -17,13 +17,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/lichtblick/rosmsg2-serialization.git"
+    "url": "https://github.com/lichtblick-suite/rosmsg2-serialization.git"
   },
   "author": {
     "name": "Lichtblick",
     "email": "lichtblick@bmwgroup.com"
   },
-  "homepage": "https://github.com/lichtblick",
+  "homepage": "https://github.com/lichtblick-suite",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
