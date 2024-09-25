@@ -24,6 +24,7 @@ jobs:
       - run: yarn run build
       - run: yarn run lint:ci
       - run: yarn run test
+      - run: ls -al
       - name: Publish to NPM (dry run)
         # `yarn publish` does not support --provenance
         run: npm publish lichtblick-rosmsg2-serialization-*.tgz --provenance --access public --dry-run
