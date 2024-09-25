@@ -26,7 +26,7 @@ jobs:
       - run: yarn run test
       - name: Publish to NPM (dry run)
         # `yarn publish` does not support --provenance
-        run: npm publish lichtblick-rosmsg-msgs-common-*.tgz --provenance --access public --dry-run
+        run: npm publish lichtblick-rosmsg2-serialization-*.tgz --provenance --access public --dry-run
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
       - name: Publish to NPM
