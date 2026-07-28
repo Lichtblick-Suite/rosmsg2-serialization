@@ -71,6 +71,37 @@ const PRIMITIVE_ARRAY_WRITERS = new Map<string, PrimitiveArrayWriter>([
   ["wstring", throwOnWstring],
 ]);
 
+/**
+ * Number of bytes `value` occupies when encoded as UTF-8.
+ *
+ * `String.length` counts UTF-16 code units, which under-reports every non-ASCII character and so
+ * would size the buffer too small. This matches `TextEncoder` semantics, including replacing an
+ * unpaired surrogate with U+FFFD, without allocating a throwaway array for each string.
+ */
+function utf8ByteLength(value: string): number {
+  let bytes = 0;
+  for (let i = 0; i < value.length; i++) {
+    const code = value.charCodeAt(i);
+    if (code < 0x80) {
+      bytes += 1;
+    } else if (code < 0x800) {
+      bytes += 2;
+    } else if (code >= 0xd800 && code <= 0xdbff && isLowSurrogate(value.charCodeAt(i + 1))) {
+      // A well-formed surrogate pair is a single code point encoded as four bytes
+      bytes += 4;
+      i++;
+    } else {
+      // Includes unpaired surrogates, which are encoded as U+FFFD
+      bytes += 3;
+    }
+  }
+  return bytes;
+}
+
+function isLowSurrogate(code: number): boolean {
+  return code >= 0xdc00 && code <= 0xdfff;
+}
+
 function throwOnWstring(): never {
   throw new Error("wstring is implementation-defined and therefore not supported");
 }
@@ -157,7 +188,8 @@ export class MessageWriter {
           for (let i = 0; i < arrayLength; i++) {
             const entry = (dataArray[i] ?? "") as string;
             newOffset += padding(newOffset, 4);
-            newOffset += 4 + entry.length + 1; // uint32 length prefix, string, null terminator
+            // uint32 length prefix, UTF-8 bytes, null terminator
+            newOffset += 4 + utf8ByteLength(entry) + 1;
           }
         } else {
           // Primitive array
@@ -176,7 +208,8 @@ export class MessageWriter {
           // String
           const entry = typeof nestedMessage === "string" ? nestedMessage : "";
           newOffset += padding(newOffset, 4);
-          newOffset += 4 + entry.length + 1; // uint32 length prefix, string, null terminator
+          // uint32 length prefix, UTF-8 bytes, null terminator
+          newOffset += 4 + utf8ByteLength(entry) + 1;
         } else {
           // Primitive
           const entrySize = this.#getPrimitiveSize(field.type);
