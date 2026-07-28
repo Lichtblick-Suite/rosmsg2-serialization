@@ -1,6 +1,7 @@
 import { parseRos2idl } from "@lichtblick/ros2idl-parser";
 import { parse as parseMessageDefinition } from "@lichtblick/rosmsg";
 
+import { MessageReader } from "./MessageReader";
 import { MessageWriter } from "./MessageWriter";
 
 const serializeString = (str: string): Uint8Array => {
@@ -602,4 +603,60 @@ module builtin_interfaces {
       );
     },
   );
+});
+
+describe("MessageWriter multi-byte strings", () => {
+  const stringDef = [
+    {
+      name: "std_msgs/String",
+      definitions: [{ type: "string", name: "data", isArray: false, isComplex: false }],
+    },
+  ];
+
+  const MULTI_BYTE = [
+    "\u3053\u3093\u306b\u3061\u306f", // 5 characters, 15 UTF-8 bytes
+    "caf\u00e9", // 4 characters, 5 UTF-8 bytes
+    "\ud83d\ude80", // 1 code point as a surrogate pair, 4 UTF-8 bytes
+    "a\u00e9\u3053\ud83d\ude80z", // mixed widths
+    "\ud83d", // unpaired high surrogate, encoded as U+FFFD
+  ];
+
+  it.each(MULTI_BYTE)("round trips %s", (data) => {
+    // GIVEN a string whose UTF-8 byte length differs from its UTF-16 code unit length
+    const writer = new MessageWriter(stringDef);
+
+    // WHEN it is written and read back
+    const result = new MessageReader(stringDef).readMessage(writer.writeMessage({ data }));
+
+    // THEN the string survives intact (unpaired surrogates become U+FFFD, as TextEncoder does)
+    expect(result).toEqual({ data: new TextDecoder().decode(new TextEncoder().encode(data)) });
+  });
+
+  it("sizes the buffer by UTF-8 bytes, not UTF-16 code units", () => {
+    // GIVEN a 5 character string that occupies 15 bytes in UTF-8
+    const msgWriter = new MessageWriter(stringDef);
+
+    // WHEN the byte size is calculated
+    // THEN it accounts for the encoded bytes: 4 encapsulation + 4 length prefix + 15 + 1 null
+    expect(msgWriter.calculateByteSize({ data: "\u3053\u3093\u306b\u3061\u306f" })).toEqual(24);
+  });
+
+  it("sizes string arrays by UTF-8 bytes", () => {
+    // GIVEN an array of multi-byte strings
+    const arrayDef = [
+      {
+        name: "std_msgs/StringArray",
+        definitions: [{ type: "string", name: "data", isArray: true, isComplex: false }],
+      },
+    ];
+    const msgWriter = new MessageWriter(arrayDef);
+    const data = ["\u3053\u3093", "\ud83d\ude80"];
+
+    // WHEN the message is written
+    const written = msgWriter.writeMessage({ data });
+
+    // THEN the calculated size covers what was actually written, and every element survives
+    expect(msgWriter.calculateByteSize({ data })).toBeGreaterThanOrEqual(written.byteLength);
+    expect(new MessageReader(arrayDef).readMessage(written)).toEqual({ data });
+  });
 });
